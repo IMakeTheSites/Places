@@ -7,9 +7,11 @@ import {
   Alert,
   StyleSheet,
 } from "react-native";
-import Colors from "../constants/Colors";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
+
+import Colors from "../constants/Colors";
+import MapPreview from "./MapPreview";
 
 const LocationPicker = (props) => {
   const [isFetching, setIsFetching] = useState(false);
@@ -27,6 +29,7 @@ const LocationPicker = (props) => {
     }
     return true;
   };
+
   const getLocationHandler = async () => {
     const hasPermission = await verifyPermissions();
     if (!hasPermission) {
@@ -38,7 +41,6 @@ const LocationPicker = (props) => {
       const location = await Location.getCurrentPositionAsync({
         timeout: 5000,
       });
-      console.log(location);
       setPickedLocation({
         lat: location.coords.latitude,
         lng: location.coords.longitude,
@@ -54,14 +56,14 @@ const LocationPicker = (props) => {
   };
 
   return (
-    <View style={styles.LocationPicker}>
-      <View style={styles.mapPreview}>
+    <View style={styles.locationPicker}>
+      <MapPreview style={styles.mapPreview} location={pickedLocation}>
         {isFetching ? (
           <ActivityIndicator size="large" color={Colors.primary} />
         ) : (
           <Text>No location chosen yet!</Text>
         )}
-      </View>
+      </MapPreview>
       <Button
         title="Get User Location"
         color={Colors.primary}
@@ -76,13 +78,11 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   mapPreview: {
+    marginBottom: 10,
     width: "100%",
     height: 150,
-    marginBottom: 10,
     borderColor: "#ccc",
     borderWidth: 1,
-    justifyContent: "center",
-    alignItems: "center",
   },
 });
 
